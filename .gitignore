@@ -3,6 +3,7 @@ node_modules
 dist
 dist_electron
 dist_app
+installer_out
 *.zip
 .env
 .env.local

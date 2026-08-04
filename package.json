@@ -14,7 +14,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "electron:dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
-    "electron:build": "vite build && electron-packager . Tagarela --platform=win32 --arch=x64 --out=dist_app --overwrite"
+    "electron:build": "vite build && electron-builder"
   },
   "build": {
     "appId": "com.tagarela.desktop",
@@ -28,10 +28,20 @@
     ],
     "win": {
       "target": [
-        "portable",
-        "dir"
-      ],
-      "forceCodeSigning": false
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Tagarela"
     }
   },
   "dependencies": {
@@ -46,6 +56,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "electron": "^29.1.0",
     "electron-builder": "^24.13.3",
+    "electron-winstaller": "^5.4.4",
     "vite": "^5.1.4"
   }
 }

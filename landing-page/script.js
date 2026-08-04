@@ -11,11 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setTimeout(() => {
-      const downloadUrl = 'https://github.com/wellingtonflores/tagarela/releases/download/v1.0.0/Tagarela-Windows.zip';
+      const downloadUrl = 'https://github.com/wellingtonflores/tagarela/releases/download/v1.0.0/Tagarela-Setup.exe';
       
       const a = document.createElement('a');
       a.href = downloadUrl;
-      a.download = 'Tagarela-Windows.zip';
+      a.download = 'Tagarela-Setup.exe';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
