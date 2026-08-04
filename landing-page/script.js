@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setTimeout(() => {
-      const downloadUrl = 'https://github.com/wellingtonflores/tagarela/releases/download/v1.0.0/Tagarela-Setup.exe';
+      const downloadUrl = 'https://github.com/wellingtonflores/tagarela/releases/latest/download/Tagarela-Setup.exe';
       
       const a = document.createElement('a');
       a.href = downloadUrl;
