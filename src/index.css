@@ -1,0 +1,219 @@
+/* ==========================================================================
+   TAGARELA DESIGN SYSTEM & SENSORY SPECIFICATIONS (TEA-FRIENDLY)
+   ========================================================================== */
+
+:root {
+  /* Temas de Cores Pastéis Tranquilizantes */
+  --bg-primary: #F4F7F6;
+  --bg-surface: #FFFFFF;
+  --bg-surface-subtle: #FAF8F5;
+  --text-main: #2D3748;
+  --text-muted: #5A6A85;
+  
+  /* Cores de Destaque Acolhedoras */
+  --accent-sky: #6B90A7;
+  --accent-sky-light: #E1ECF4;
+  --accent-mint: #7BA88B;
+  --accent-mint-light: #E4F2E9;
+  --accent-lavender: #9385B1;
+  --accent-lavender-light: #EDE8F7;
+  --accent-peach: #DF9B79;
+  --accent-peach-light: #FBF0EA;
+  
+  --border-color: #E2E8F0;
+  --border-color-hover: #CBD5E1;
+  
+  /* Sombras Suaves e Orgânicas (Sem Contraste Agressivo) */
+  --shadow-soft: 0 4px 20px -2px rgba(107, 144, 167, 0.08);
+  --shadow-card: 0 10px 30px -5px rgba(45, 55, 72, 0.06);
+  --shadow-button: 0 4px 12px rgba(107, 144, 167, 0.12);
+  
+  /* Tipografia Base */
+  --font-family-base: 'Lexend', 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-family-dyslexic: 'Lexend', sans-serif;
+  --base-font-size: 16px;
+  --line-height-base: 1.6;
+  --letter-spacing-base: 0.02em;
+
+  /* Transições Calmas */
+  --transition-smooth: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 10px;
+
+  /* Tamanho de Botão Ergonomico p/ Mouse e Touchscreen */
+  --min-target-size: 64px;
+}
+
+/* TEMA: MENTA SUAVE */
+body[data-theme="mint"] {
+  --bg-primary: #F0F6F2;
+  --bg-surface-subtle: #E8F2EC;
+  --accent-sky: #5E9B75;
+  --accent-sky-light: #E2F0E7;
+}
+
+/* TEMA: LAVANDA SUAVE */
+body[data-theme="lavender"] {
+  --bg-primary: #F5F3F9;
+  --bg-surface-subtle: #ECE8F5;
+  --accent-sky: #8474A5;
+  --accent-sky-light: #EBE6F5;
+}
+
+/* TEMA: CREME ACOLHEDOR */
+body[data-theme="cream"] {
+  --bg-primary: #FAF7F2;
+  --bg-surface-subtle: #F3ECE2;
+  --accent-sky: #B88562;
+  --accent-sky-light: #F7EFE8;
+}
+
+/* TAMANHOS DE FONTE ACESSÍVEIS */
+body[data-font-size="large"] {
+  --base-font-size: 18px;
+}
+
+body[data-font-size="xlarge"] {
+  --base-font-size: 21px;
+}
+
+body[data-dyslexia-font="true"] {
+  --font-family-base: 'Lexend', sans-serif;
+  --line-height-base: 1.8;
+  --letter-spacing-base: 0.05em;
+}
+
+/* REDUÇÃO DE MOVIMENTO (SENSORIAL) */
+body[data-reduced-motion="true"] *,
+body[data-reduced-motion="true"] *::before,
+body[data-reduced-motion="true"] *::after {
+  animation-duration: 0.001s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001s !important;
+}
+
+/* RESET E BASE GLOBAL */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none; /* Evita seleção de texto acidental em touchscreens por crianças */
+}
+
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--base-font-size);
+  line-height: var(--line-height-base);
+  letter-spacing: var(--letter-spacing-base);
+  color: var(--text-main);
+  background-color: var(--bg-primary);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* UTILITÁRIOS DA INTERFACE */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  background-color: var(--bg-primary);
+}
+
+/* BOTÕES AMPLOS COM DESIGN SENSORIAL */
+.sensory-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: var(--min-target-size);
+  min-width: var(--min-target-size);
+  padding: 14px 28px;
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  background-color: var(--accent-sky);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-button);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  outline: none;
+}
+
+.sensory-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: 0 6px 16px rgba(107, 144, 167, 0.2);
+}
+
+.sensory-button:active {
+  transform: translateY(1px);
+  filter: brightness(0.95);
+}
+
+.sensory-button.secondary {
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  border-color: var(--border-color);
+}
+
+.sensory-button.secondary:hover {
+  border-color: var(--accent-sky);
+  background-color: var(--accent-sky-light);
+}
+
+.sensory-button.success {
+  background-color: var(--accent-mint);
+}
+
+.sensory-button.large {
+  min-height: 80px;
+  padding: 18px 36px;
+  font-size: 1.3rem;
+  border-radius: var(--radius-lg);
+}
+
+/* CARDS ACOLHEDORES PARA EXERCÍCIOS */
+.sensory-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
+  transition: var(--transition-smooth);
+}
+
+/* KIOSK / MODO CRIANÇA BANNER & PERSISTÊNCIA */
+.kiosk-lock-bar {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+}
+
+/* CUSTOM SCROLLBARS SUAVES */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}

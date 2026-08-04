@@ -1,0 +1,51 @@
+{
+  "name": "tagarela-desktop",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "electron/main.cjs",
+  "author": {
+    "name": "Equipe Tagarela TCC",
+    "email": "contato@tagarelafono.com.br"
+  },
+  "description": "Software Desktop de Terapia Fonoaudiológica para Crianças Autistas (TEA)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "electron:dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "electron:build": "vite build && electron-packager . Tagarela --platform=win32 --arch=x64 --out=dist_app --overwrite"
+  },
+  "build": {
+    "appId": "com.tagarela.desktop",
+    "productName": "Tagarela",
+    "directories": {
+      "output": "dist_electron"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "win": {
+      "target": [
+        "portable",
+        "dir"
+      ],
+      "forceCodeSigning": false
+    }
+  },
+  "dependencies": {
+    "lucide-react": "^0.344.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@electron/packager": "^20.1.1",
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "@vitejs/plugin-react": "^4.2.1",
+    "electron": "^29.1.0",
+    "electron-builder": "^24.13.3",
+    "vite": "^5.1.4"
+  }
+}
