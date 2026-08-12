@@ -1,9 +1,9 @@
 ; ============================================================================
-; SCRIPT INNO SETUP — INSTALADOR MODERNO TAGARELA DESKTOP
+; SCRIPT INNO SETUP OTIMIZADO — INSTALADOR TAGARELA DESKTOP (~60MB - 80MB)
 ; ============================================================================
 
 #define MyAppName "Tagarela"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "Equipe Tagarela TCC"
 #define MyAppURL "https://github.com/wellingtonflores/tagarela"
 #define MyAppExeName "Tagarela.exe"
@@ -21,8 +21,8 @@ DisableProgramGroupPage=yes
 WizardStyle=modern
 UninstallDisplayIcon={app}\{#MyAppExeName}
 OutputDir=dist_installer
-OutputBaseFilename=Tagarela-Setup
-Compression=lzma2/max
+OutputBaseFilename=Tagarela-Setup-v1.0.1
+Compression=lzma2/ultra64
 SolidCompression=yes
 PrivilegesRequired=lowest
 
@@ -33,7 +33,8 @@ Name: "brazilianportuguese"; MessagesFile: "compiler:Languages\BrazilianPortugue
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "dist_app\Tagarela-win32-x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+; Copiar arquivos principais ignorando idiomas desnecessários (mantendo apenas pt-BR e en-US)
+Source: "dist_app\Tagarela-win32-x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "locales\af.pak,locales\am.pak,locales\ar.pak,locales\bg.pak,locales\bn.pak,locales\ca.pak,locales\cs.pak,locales\da.pak,locales\de.pak,locales\el.pak,locales\es*.pak,locales\et.pak,locales\fa.pak,locales\fi.pak,locales\fil.pak,locales\fr.pak,locales\gu.pak,locales\he.pak,locales\hi.pak,locales\hr.pak,locales\hu.pak,locales\id.pak,locales\it.pak,locales\ja.pak,locales\kn.pak,locales\ko.pak,locales\lt.pak,locales\lv.pak,locales\ml.pak,locales\mr.pak,locales\ms.pak,locales\nb.pak,locales\nl.pak,locales\pl.pak,locales\ro.pak,locales\ru.pak,locales\sk.pak,locales\sl.pak,locales\sr.pak,locales\sv.pak,locales\sw.pak,locales\ta.pak,locales\te.pak,locales\th.pak,locales\tr.pak,locales\uk.pak,locales\ur.pak,locales\vi.pak,locales\zh*.pak"
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
