@@ -3,9 +3,9 @@ import path from 'path';
 import fs from 'fs';
 
 async function buildInstaller() {
-  console.log('Iniciando compilação do instalador Tagarela-Setup.exe...');
+  console.log('Iniciando compilação do instalador tradicional Windows Tagarela-Setup.exe...');
   
-  const outDir = path.resolve('installer_out');
+  const outDir = path.resolve('dist_installer');
   if (!fs.existsSync(outDir)) {
     fs.mkdirSync(outDir, { recursive: true });
   }
@@ -20,7 +20,7 @@ async function buildInstaller() {
       description: 'Software Desktop de Terapia Fonoaudiológica para Crianças Autistas (TEA)',
       noMsi: true,
     });
-    console.log('✅ Instalador Tagarela-Setup.exe gerado com sucesso em: installer_out/Tagarela-Setup.exe');
+    console.log('✅ Instalador Tagarela-Setup.exe gerado com sucesso em: dist_installer/Tagarela-Setup.exe');
   } catch (e) {
     console.error('Erro ao criar instalador:', e);
   }

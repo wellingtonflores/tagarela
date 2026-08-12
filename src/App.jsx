@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
 import { SensoryProvider, useSensory } from './context/SensoryContext';
-import { Header } from './components/Navigation/Header';
+import { LoginView } from './components/Auth/LoginView';
+import { GamesHubView } from './components/Games/GamesHubView';
+import { ExpressiveLanguageGame } from './components/Games/ExpressiveLanguageGame';
+import { VocabularyGame } from './components/Games/VocabularyGame';
 import { ChildTherapyView } from './components/ChildMode/ChildTherapyView';
 import { AdultDashboard } from './components/AdultMode/AdultDashboard';
+import { Header } from './components/Navigation/Header';
 import { PinModal } from './components/ChildMode/PinModal';
 
 function AppContent() {
-  const { settings, switchMode } = useSensory();
-  const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard', 'goals', 'sensory'
+  const { settings, switchMode, userSession } = useSensory();
+  
+  // Se já estiver logado (sessão salva no localStorage), abre direto o Hub de Jogos.
+  // Caso contrário, abre a Tela 1 de Login!
+  const [currentView, setCurrentView] = useState(() => {
+    return userSession ? 'hub' : 'login';
+  });
+
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
   const [stats, setStats] = useState({
     totalAttempts: 48,
@@ -21,39 +32,94 @@ function AppContent() {
     }));
   };
 
-  const handleRequestUnlock = () => {
-    if (settings.activeMode === 'child') {
-      // Exigir PIN para ir para o modo adulto
-      setIsPinModalOpen(true);
+  const handleSelectModule = (moduleId) => {
+    if (moduleId === 'phonological') {
+      setCurrentView('game_phonological');
+    } else if (moduleId === 'expressive') {
+      setCurrentView('game_expressive');
+    } else if (moduleId === 'vocabulary') {
+      setCurrentView('game_vocabulary');
     } else {
-      // Ir diretamente para o modo criança (iniciar sessão kiosk)
-      switchMode('child');
+      setCurrentView('game_phonological');
     }
   };
 
-  const handlePinSuccess = () => {
-    setIsPinModalOpen(false);
+  const handleOpenParentAuth = () => {
     switchMode('adult');
+    setCurrentView('adult');
+  };
+
+  const handleLoginSuccess = () => {
+    switchMode('child');
+    setCurrentView('hub');
+  };
+
+  const handleReturnToHub = () => {
+    switchMode('child');
+    setCurrentView('hub');
+  };
+
+  const handleLogout = () => {
+    setCurrentView('login');
   };
 
   return (
     <div className="app-container">
-      <Header
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onRequestUnlock={handleRequestUnlock}
-      />
+      {/* Header do painel de estatísticas do adulto */}
+      {currentView === 'adult' && (
+        <Header
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onRequestUnlock={handleReturnToHub}
+        />
+      )}
 
-      {settings.activeMode === 'child' ? (
-        <ChildTherapyView onRecordMetrics={handleRecordMetrics} />
-      ) : (
+      {/* TELA 1: LOGIN (Validação de e-mail e persistência de sessão) */}
+      {currentView === 'login' && (
+        <LoginView
+          onLoginSuccess={handleLoginSuccess}
+          onGuestChildAccess={handleLoginSuccess}
+        />
+      )}
+
+      {/* TELA 2: HUB DE JOGOS (Exibe usuário logado e botão de Logout) */}
+      {currentView === 'hub' && (
+        <GamesHubView
+          onSelectModule={handleSelectModule}
+          onOpenParentAuth={handleOpenParentAuth}
+          onLogout={handleLogout}
+        />
+      )}
+
+      {/* MÓDULOS DE JOGOS INTERATIVOS */}
+      {currentView === 'game_phonological' && (
+        <ChildTherapyView
+          onRecordMetrics={handleRecordMetrics}
+          onBackToHub={handleReturnToHub}
+        />
+      )}
+
+      {currentView === 'game_expressive' && (
+        <ExpressiveLanguageGame onBackToHub={handleReturnToHub} />
+      )}
+
+      {currentView === 'game_vocabulary' && (
+        <VocabularyGame onBackToHub={handleReturnToHub} />
+      )}
+
+      {/* PAINEL DOS PAIS / FONOAUDIÓLOGOS */}
+      {currentView === 'adult' && (
         <AdultDashboard activeTab={activeTab} stats={stats} />
       )}
 
       <PinModal
         isOpen={isPinModalOpen}
         onClose={() => setIsPinModalOpen(false)}
-        onSuccess={handlePinSuccess}
+        onSuccess={() => {
+          setIsPinModalOpen(false);
+          switchMode('adult');
+          setCurrentView('adult');
+        }}
       />
     </div>
   );

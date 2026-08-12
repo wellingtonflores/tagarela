@@ -4,6 +4,7 @@ import { sensoryAudio } from '../audio/SensoryAudioEngine';
 const SensoryContext = createContext();
 
 const STORAGE_KEY = 'tagarela_sensory_preferences_v1';
+const USER_SESSION_KEY = 'tagarela_user_session_v1';
 
 const defaultSettings = {
   theme: 'sky',            // 'sky', 'mint', 'lavender', 'cream'
@@ -27,7 +28,17 @@ export function SensoryProvider({ children }) {
     }
   });
 
-  // Salvar no localStorage sempre que houver mudanças
+  // Sessão persistente do Usuário Fonoaudiólogo / Pais
+  const [userSession, setUserSession] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem(USER_SESSION_KEY);
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  // Salvar preferências sensoriais no localStorage
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
@@ -35,16 +46,27 @@ export function SensoryProvider({ children }) {
       console.warn("Não foi possível salvar configurações locais:", e);
     }
 
-    // Aplicar atributos no <body> para que o CSS reaja imediatamente
     document.body.setAttribute('data-theme', settings.theme);
     document.body.setAttribute('data-font-size', settings.fontSize);
     document.body.setAttribute('data-dyslexia-font', settings.dyslexiaFont);
     document.body.setAttribute('data-reduced-motion', settings.reducedMotion);
     document.body.setAttribute('data-input-mode', settings.inputMode);
 
-    // Ajustar volume do sintetizador sonoro
     sensoryAudio.setVolume(settings.volume / 100);
   }, [settings]);
+
+  // Salvar sessão de usuário no localStorage
+  useEffect(() => {
+    try {
+      if (userSession) {
+        localStorage.setItem(USER_SESSION_KEY, JSON.stringify(userSession));
+      } else {
+        localStorage.removeItem(USER_SESSION_KEY);
+      }
+    } catch (e) {
+      console.warn("Não foi possível salvar sessão no localStorage:", e);
+    }
+  }, [userSession]);
 
   const updateSetting = (key, value) => {
     setSettings((prev) => ({
@@ -57,8 +79,47 @@ export function SensoryProvider({ children }) {
     updateSetting('activeMode', mode);
   };
 
+  // Método de Login Realista com validação de formato de e-mail
+  const loginUser = (email, password) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (!email || !emailRegex.test(email.trim())) {
+      return {
+        success: false,
+        error: 'Por favor, insira um e-mail válido (ex: seu.nome@exemplo.com)'
+      };
+    }
+
+    if (!password || password.trim().length === 0) {
+      return {
+        success: false,
+        error: 'Por favor, digite sua senha.'
+      };
+    }
+
+    const userData = {
+      email: email.trim(),
+      name: email.split('@')[0],
+      loggedInAt: new Date().toISOString()
+    };
+
+    setUserSession(userData);
+    return { success: true, user: userData };
+  };
+
+  const logoutUser = () => {
+    setUserSession(null);
+  };
+
   return (
-    <SensoryContext.Provider value={{ settings, updateSetting, switchMode }}>
+    <SensoryContext.Provider value={{
+      settings,
+      updateSetting,
+      switchMode,
+      userSession,
+      loginUser,
+      logoutUser
+    }}>
       {children}
     </SensoryContext.Provider>
   );

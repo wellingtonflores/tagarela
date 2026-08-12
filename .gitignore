@@ -4,6 +4,8 @@ dist
 dist_electron
 dist_app
 installer_out
+dist_installer
 *.zip
+*.exe
 .env
 .env.local
