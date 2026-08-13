@@ -1,23 +1,39 @@
-import React from 'react';
-import { Play, ArrowRight, FolderOpen, MessageSquare, Puzzle, Gamepad2, Star, Lightbulb, LogOut, User } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Play, MessageSquare, Puzzle, Gamepad2, Star, Lightbulb, LogOut, User, Mic, HeartHandshake, Award, Settings, ChevronDown, ShieldCheck } from 'lucide-react';
 import { useSensory } from '../../context/SensoryContext';
 import { sensoryAudio } from '../../audio/SensoryAudioEngine';
 
 export function GamesHubView({ onSelectModule, onOpenParentAuth, onLogout }) {
   const { userSession, logoutUser } = useSensory();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
-  const handleCardClick = (moduleId, title) => {
-    sensoryAudio.playClickSound();
-    if (moduleId === 'parents') {
-      onOpenParentAuth();
-    } else {
-      sensoryAudio.speakWord(title);
-      onSelectModule(moduleId);
+  // Fechar dropdown ao clicar fora
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
     }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleCardClick = (moduleId) => {
+    sensoryAudio.playClickSound();
+    // NÃO fala o nome do módulo automaticamente. A fala ocorre estritamente ao clicar no botão "Ouvir".
+    onSelectModule(moduleId);
+  };
+
+  const handleOpenParentPanel = () => {
+    sensoryAudio.playClickSound();
+    setIsDropdownOpen(false);
+    onOpenParentAuth();
   };
 
   const handleLogoutClick = () => {
     sensoryAudio.playClickSound();
+    setIsDropdownOpen(false);
     logoutUser();
     if (onLogout) {
       onLogout();
@@ -36,6 +52,24 @@ export function GamesHubView({ onSelectModule, onOpenParentAuth, onLogout }) {
           <div className="block b-yellow" />
         </div>
       )
+    },
+    {
+      id: 'voice_recorder',
+      title: 'Imitação Vocal (Gravador)',
+      color: '#F72585',
+      iconSvg: <Mic size={52} color="#F72585" />
+    },
+    {
+      id: 'calm_zone',
+      title: 'Cantinho da Calmaria',
+      color: '#166534',
+      iconSvg: <HeartHandshake size={54} color="#4CAF50" />
+    },
+    {
+      id: 'sticker_album',
+      title: 'Álbum de Figurinhas',
+      color: '#B45309',
+      iconSvg: <Award size={54} color="#F59E0B" />
     },
     {
       id: 'communicative',
@@ -93,74 +127,80 @@ export function GamesHubView({ onSelectModule, onOpenParentAuth, onLogout }) {
 
   return (
     <div className="hub-container">
-      {/* HEADER TAGARELA COM PERFIL E LOGOUT */}
+      {/* HEADER TAGARELA COM DROPDOWN MENU NO EMAIL DO USUÁRIO */}
       <header className="hub-header">
         <h1 className="hub-tagarela-title">TAGARELA</h1>
 
-        <div className="header-user-actions">
-          {userSession && (
-            <div className="logged-user-pill">
-              <User size={18} color="#6B90A7" />
-              <span>{userSession.email}</span>
+        <div className="header-user-actions" ref={dropdownRef}>
+          <div
+            className={`logged-user-dropdown-trigger ${isDropdownOpen ? 'active' : ''}`}
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          >
+            <div className="user-avatar-circle">
+              <User size={18} color="#1E6091" />
+            </div>
+            <span className="user-email-text">{userSession?.email || 'Fonoaudiólogo(a)'}</span>
+            <ChevronDown size={18} className={`chevron-icon ${isDropdownOpen ? 'open' : ''}`} />
+          </div>
+
+          {/* MENU DROPDOWN DE OPÇÕES DOS PAIS */}
+          {isDropdownOpen && (
+            <div className="user-options-dropdown-menu">
+              <div className="dropdown-header-info">
+                <span className="info-title">Conta do Responsável</span>
+                <span className="info-email">{userSession?.email}</span>
+              </div>
+
+              <div className="dropdown-divider" />
+
+              <button className="dropdown-item-btn" onClick={handleOpenParentPanel}>
+                <ShieldCheck size={20} color="#7209B7" />
+                <div className="item-text-group">
+                  <span className="item-title">Painel do Adulto / Área dos Pais</span>
+                  <span className="item-sub">Estatísticas, Relatórios e Configurações</span>
+                </div>
+              </button>
+
+              <button className="dropdown-item-btn" onClick={handleOpenParentPanel}>
+                <Settings size={20} color="#1E6091" />
+                <div className="item-text-group">
+                  <span className="item-title">Preferências Sensoriais</span>
+                  <span className="item-sub">Ajuste de Cores, Fontes e Áudio</span>
+                </div>
+              </button>
+
+              <div className="dropdown-divider" />
+
+              <button className="dropdown-item-btn logout" onClick={handleLogoutClick}>
+                <LogOut size={20} color="#DC2626" />
+                <span>Sair da Conta (Logout)</span>
+              </button>
             </div>
           )}
-
-          <button className="btn-logout" onClick={handleLogoutClick} title="Sair da Conta">
-            <LogOut size={18} />
-            <span>Sair (Logout)</span>
-          </button>
         </div>
       </header>
 
-      {/* GRADE DE CARDS BASEADA FIELMENTE NA IMAGEM ANEXADA */}
-      <main className="modules-grid-layout">
-        {/* CARD VERTICAL 1: ÁREA DOS PAIS (CARD DESTAQUE NA ESQUERDA) */}
-        <div
-          className="parent-area-card"
-          onClick={() => handleCardClick('parents', 'Área dos Pais')}
-        >
-          <div className="play-badge-circle">
-            <Play size={18} fill="#FFFFFF" color="#FFFFFF" />
-          </div>
-
-          <div className="folder-icon-wrap">
-            <FolderOpen size={64} color="#F7A619" fill="#FFFBEB" />
-            <div className="confetti-dots">
-              <span className="dot d-purple" />
-              <span className="dot d-blue" />
-              <span className="dot d-green" />
+      {/* GRADE DE JOGOS LIMPA (SEM FALA AUTOMÁTICA) */}
+      <main className="modules-grid-clean">
+        {gameModules.map((mod) => (
+          <div
+            key={mod.id}
+            className="game-module-card"
+            onClick={() => handleCardClick(mod.id)}
+          >
+            <div className="play-badge-circle">
+              <Play size={16} fill="#FFFFFF" color="#FFFFFF" />
             </div>
-          </div>
 
-          <h2 className="parent-card-title">Área dos pais</h2>
-
-          <div className="arrow-badge-btn">
-            <ArrowRight size={24} color="#D97706" />
-          </div>
-        </div>
-
-        {/* CARDS DOS 6 MÓDULOS DE JOGOS DA DIREITA */}
-        <div className="games-cards-grid">
-          {gameModules.map((mod) => (
-            <div
-              key={mod.id}
-              className="game-module-card"
-              onClick={() => handleCardClick(mod.id, mod.title)}
-            >
-              <div className="play-badge-circle">
-                <Play size={16} fill="#FFFFFF" color="#FFFFFF" />
-              </div>
-
-              <div className="module-icon-area">
-                {mod.iconSvg}
-              </div>
-
-              <h2 className="module-card-title" style={{ color: mod.color }}>
-                {mod.title}
-              </h2>
+            <div className="module-icon-area">
+              {mod.iconSvg}
             </div>
-          ))}
-        </div>
+
+            <h2 className="module-card-title" style={{ color: mod.color }}>
+              {mod.title}
+            </h2>
+          </div>
+        ))}
       </main>
 
       <style>{`
@@ -196,135 +236,147 @@ export function GamesHubView({ onSelectModule, onOpenParentAuth, onLogout }) {
         }
 
         .header-user-actions {
+          position: relative;
+        }
+
+        .logged-user-dropdown-trigger {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          background: #FFFFFF;
+          border: 2px solid #E2E8F0;
+          padding: 8px 16px;
+          border-radius: 28px;
+          cursor: pointer;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+          transition: all 0.2s ease;
+        }
+
+        .logged-user-dropdown-trigger:hover, .logged-user-dropdown-trigger.active {
+          border-color: #F7A619;
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(247, 166, 25, 0.15);
+        }
+
+        .user-avatar-circle {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background: #E1ECF4;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .user-email-text {
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: #2D3748;
+        }
+
+        .chevron-icon {
+          color: #718096;
+          transition: transform 0.2s ease;
+        }
+
+        .chevron-icon.open {
+          transform: rotate(180deg);
+        }
+
+        .user-options-dropdown-menu {
+          position: absolute;
+          top: calc(100% + 8px);
+          right: 0;
+          width: 310px;
+          background: #FFFFFF;
+          border-radius: 24px;
+          padding: 16px;
+          box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+          border: 2px solid #E2E8F0;
+          z-index: 100;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          animation: dropdownFadeIn 0.2s ease;
+        }
+
+        @keyframes dropdownFadeIn {
+          from { opacity: 0; transform: translateY(-8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-header-info {
+          display: flex;
+          flex-direction: column;
+          padding: 4px 8px 8px 8px;
+        }
+
+        .info-title {
+          font-size: 0.8rem;
+          font-weight: 700;
+          color: #A0AEC0;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .info-email {
+          font-size: 1rem;
+          font-weight: 800;
+          color: #1A202C;
+          margin-top: 2px;
+        }
+
+        .dropdown-divider {
+          height: 1px;
+          background: #EDF2F7;
+          margin: 4px 0;
+        }
+
+        .dropdown-item-btn {
           display: flex;
           align-items: center;
           gap: 12px;
-        }
-
-        .logged-user-pill {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          background: #FFFFFF;
-          border: 1px solid #E2E8F0;
-          padding: 8px 16px;
-          border-radius: 20px;
-          font-size: 0.9rem;
-          font-weight: 600;
-          color: #2D3748;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-
-        .btn-logout {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          background: #FFFFFF;
-          border: 2px solid #FCA5A5;
-          padding: 10px 18px;
-          border-radius: 24px;
-          font-weight: 700;
-          color: #DC2626;
+          width: 100%;
+          padding: 12px;
+          border-radius: 16px;
+          border: none;
+          background: transparent;
           cursor: pointer;
-          transition: transform 0.2s ease, background 0.2s ease;
+          text-align: left;
+          transition: background 0.15s ease;
         }
 
-        .btn-logout:hover {
-          transform: translateY(-2px);
+        .dropdown-item-btn:hover {
+          background: #F7FAFC;
+        }
+
+        .dropdown-item-btn.logout:hover {
           background: #FEE2E2;
         }
 
-        .modules-grid-layout {
-          display: grid;
-          grid-template-columns: 240px 1fr;
-          gap: 24px;
-          width: 100%;
-          max-width: 1100px;
-        }
-
-        .parent-area-card {
-          background: #FFFFFF;
-          border-radius: 28px;
-          padding: 28px 20px;
+        .item-text-group {
           display: flex;
           flex-direction: column;
-          align-items: center;
-          justify-content: space-between;
-          position: relative;
-          min-height: 380px;
-          box-shadow: 0 12px 32px rgba(0,0,0,0.06);
-          border: 3px solid #FFFFFF;
-          cursor: pointer;
-          transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.25s ease;
         }
 
-        .parent-area-card:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 18px 40px rgba(0,0,0,0.1);
-          border-color: #F7A619;
+        .item-title {
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: #2D3748;
         }
 
-        .play-badge-circle {
-          position: absolute;
-          top: 16px;
-          right: 16px;
-          width: 34px;
-          height: 34px;
-          background: #F7A619;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 4px 10px rgba(247, 166, 25, 0.4);
+        .item-sub {
+          font-size: 0.8rem;
+          color: #718096;
+          font-weight: 500;
         }
 
-        .folder-icon-wrap {
-          margin-top: 40px;
-          position: relative;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .confetti-dots {
-          position: absolute;
-          top: -10px;
-          display: flex;
-          gap: 8px;
-        }
-
-        .dot {
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-        }
-        .d-purple { background: #7209B7; }
-        .d-blue { background: #4361EE; }
-        .d-green { background: #70E000; }
-
-        .parent-card-title {
-          font-size: 1.6rem;
-          font-weight: 800;
-          color: #7209B7;
-          text-align: center;
-          margin: 16px 0;
-        }
-
-        .arrow-badge-btn {
-          width: 48px;
-          height: 48px;
-          border-radius: 50%;
-          border: 2px solid #F7A619;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #FFFBEB;
-        }
-
-        .games-cards-grid {
+        .modules-grid-clean {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
           gap: 20px;
+          width: 100%;
+          max-width: 1100px;
         }
 
         .game-module-card {
@@ -347,6 +399,20 @@ export function GamesHubView({ onSelectModule, onOpenParentAuth, onLogout }) {
           transform: translateY(-6px);
           box-shadow: 0 16px 36px rgba(0,0,0,0.09);
           border-color: #6B90A7;
+        }
+
+        .play-badge-circle {
+          position: absolute;
+          top: 16px;
+          right: 16px;
+          width: 32px;
+          height: 32px;
+          background: #F7A619;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 10px rgba(247, 166, 25, 0.4);
         }
 
         .module-icon-area {

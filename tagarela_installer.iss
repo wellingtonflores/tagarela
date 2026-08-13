@@ -1,9 +1,9 @@
 ; ============================================================================
-; SCRIPT INNO SETUP OTIMIZADO — INSTALADOR TAGARELA DESKTOP (~68MB)
+; SCRIPT INNO SETUP OTIMIZADO — INSTALADOR TAGARELA DESKTOP v1.0.3 (~68MB)
 ; ============================================================================
 
 #define MyAppName "Tagarela"
-#define MyAppVersion "1.0.2"
+#define MyAppVersion "1.0.3"
 #define MyAppPublisher "Equipe Tagarela TCC"
 #define MyAppURL "https://github.com/wellingtonflores/tagarela"
 #define MyAppExeName "Tagarela.exe"
@@ -22,7 +22,7 @@ WizardStyle=modern
 SetupIconFile=public\icon.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 OutputDir=dist_installer
-OutputBaseFilename=Tagarela-Setup-v1.0.2
+OutputBaseFilename=Tagarela-Setup-v1.0.3
 Compression=lzma2/ultra64
 SolidCompression=yes
 PrivilegesRequired=lowest

@@ -4,6 +4,9 @@ import { LoginView } from './components/Auth/LoginView';
 import { GamesHubView } from './components/Games/GamesHubView';
 import { ExpressiveLanguageGame } from './components/Games/ExpressiveLanguageGame';
 import { VocabularyGame } from './components/Games/VocabularyGame';
+import { VoiceRecorderGame } from './components/Games/VoiceRecorderGame';
+import { SensoryCalmZone } from './components/Games/SensoryCalmZone';
+import { StickerAlbumView } from './components/Games/StickerAlbumView';
 import { ChildTherapyView } from './components/ChildMode/ChildTherapyView';
 import { AdultDashboard } from './components/AdultMode/AdultDashboard';
 import { Header } from './components/Navigation/Header';
@@ -12,8 +15,6 @@ import { PinModal } from './components/ChildMode/PinModal';
 function AppContent() {
   const { settings, switchMode, userSession } = useSensory();
   
-  // Se já estiver logado (sessão salva no localStorage), abre direto o Hub de Jogos.
-  // Caso contrário, abre a Tela 1 de Login!
   const [currentView, setCurrentView] = useState(() => {
     return userSession ? 'hub' : 'login';
   });
@@ -39,6 +40,12 @@ function AppContent() {
       setCurrentView('game_expressive');
     } else if (moduleId === 'vocabulary') {
       setCurrentView('game_vocabulary');
+    } else if (moduleId === 'voice_recorder') {
+      setCurrentView('game_voice_recorder');
+    } else if (moduleId === 'calm_zone') {
+      setCurrentView('game_calm_zone');
+    } else if (moduleId === 'sticker_album') {
+      setCurrentView('game_sticker_album');
     } else {
       setCurrentView('game_phonological');
     }
@@ -65,7 +72,6 @@ function AppContent() {
 
   return (
     <div className="app-container">
-      {/* Header do painel de estatísticas do adulto */}
       {currentView === 'adult' && (
         <Header
           activeTab={activeTab}
@@ -74,15 +80,12 @@ function AppContent() {
         />
       )}
 
-      {/* TELA 1: LOGIN (Validação de e-mail e persistência de sessão) */}
       {currentView === 'login' && (
         <LoginView
           onLoginSuccess={handleLoginSuccess}
-          onGuestChildAccess={handleLoginSuccess}
         />
       )}
 
-      {/* TELA 2: HUB DE JOGOS (Exibe usuário logado e botão de Logout) */}
       {currentView === 'hub' && (
         <GamesHubView
           onSelectModule={handleSelectModule}
@@ -91,7 +94,7 @@ function AppContent() {
         />
       )}
 
-      {/* MÓDULOS DE JOGOS INTERATIVOS */}
+      {/* JOGOS E RECURSOS NOVOS v1.0.3 */}
       {currentView === 'game_phonological' && (
         <ChildTherapyView
           onRecordMetrics={handleRecordMetrics}
@@ -107,7 +110,18 @@ function AppContent() {
         <VocabularyGame onBackToHub={handleReturnToHub} />
       )}
 
-      {/* PAINEL DOS PAIS / FONOAUDIÓLOGOS */}
+      {currentView === 'game_voice_recorder' && (
+        <VoiceRecorderGame onBackToHub={handleReturnToHub} />
+      )}
+
+      {currentView === 'game_calm_zone' && (
+        <SensoryCalmZone onBackToHub={handleReturnToHub} />
+      )}
+
+      {currentView === 'game_sticker_album' && (
+        <StickerAlbumView onBackToHub={handleReturnToHub} />
+      )}
+
       {currentView === 'adult' && (
         <AdultDashboard activeTab={activeTab} stats={stats} />
       )}

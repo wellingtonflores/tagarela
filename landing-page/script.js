@@ -11,12 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setTimeout(() => {
-      // URL exata do instalador publicado no GitHub Releases v1.0.2
-      const downloadUrl = 'https://github.com/wellingtonflores/tagarela/releases/download/v1.0.2/Tagarela-Setup-v1.0.2.exe';
+      // URL exata do instalador publicado no GitHub Releases v1.0.3
+      const downloadUrl = 'https://github.com/wellingtonflores/tagarela/releases/download/v1.0.3/Tagarela-Setup-v1.0.3.exe';
       
       const a = document.createElement('a');
       a.href = downloadUrl;
-      a.download = 'Tagarela-Setup-v1.0.2.exe';
+      a.download = 'Tagarela-Setup-v1.0.3.exe';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
