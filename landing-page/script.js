@@ -11,15 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setTimeout(() => {
-      const downloadUrl = 'https://github.com/wellingtonflores/tagarela/releases/latest/download/Tagarela-Setup.exe';
+      // URL exata do instalador publicado no GitHub Releases v1.0.2
+      const downloadUrl = 'https://github.com/wellingtonflores/tagarela/releases/download/v1.0.2/Tagarela-Setup-v1.0.2.exe';
       
       const a = document.createElement('a');
       a.href = downloadUrl;
-      a.download = 'Tagarela-Setup.exe';
+      a.download = 'Tagarela-Setup-v1.0.2.exe';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-    }, 1200);
+    }, 1000);
   }
 
   if (btnTriggerDownload) {
