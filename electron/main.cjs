@@ -5,7 +5,6 @@ const path = require('path');
 if (process.platform === 'win32') {
   const squirrelArg = process.argv.find(arg => arg.startsWith('--squirrel-'));
   if (squirrelArg) {
-    // Se foi chamado pelo instalador com argumentos do Squirrel, encerra sem abrir GUI
     app.quit();
   }
 }
@@ -38,7 +37,7 @@ function createWindow() {
       devTools: isDev, // Desativa devTools estritamente em produção
       backgroundThrottling: false, // Evita travamentos de áudio/animação ao mudar de foco
     },
-    icon: path.join(__dirname, '../public/icon.jpg')
+    icon: path.join(__dirname, '../public/icon.ico')
   });
 
   if (isDev) {
