@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useSensory } from '../../context/SensoryContext';
-import { ArrowRight, Shield, Sparkles, AlertCircle } from 'lucide-react';
+import { ArrowRight, Shield, AlertCircle } from 'lucide-react';
 import { sensoryAudio } from '../../audio/SensoryAudioEngine';
 
-export function LoginView({ onLoginSuccess, onGuestChildAccess }) {
+export function LoginView({ onLoginSuccess }) {
   const { loginUser } = useSensory();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,13 +25,6 @@ export function LoginView({ onLoginSuccess, onGuestChildAccess }) {
     }
   };
 
-  const handleChildDirect = () => {
-    sensoryAudio.playSuccessSound();
-    // Login automático convidado para a criança
-    loginUser('crianca@tagarela.com', '1234');
-    onGuestChildAccess();
-  };
-
   return (
     <div className="login-screen-wrap">
       {/* NUVENS DE FUNDO ANIMADAS SUAVEMENTE */}
@@ -47,7 +40,7 @@ export function LoginView({ onLoginSuccess, onGuestChildAccess }) {
         <div className="yellow-container-card">
           <div className="auth-header">
             <Shield size={24} color="#7C4A03" />
-            <span>Login de Acesso dos Pais / Fonoaudiólogos</span>
+            <span>Acesso Restrito para Pais e Fonoaudiólogos</span>
           </div>
 
           <form onSubmit={handleLogin} className="login-form">
@@ -93,14 +86,6 @@ export function LoginView({ onLoginSuccess, onGuestChildAccess }) {
               <ArrowRight size={22} />
             </button>
           </form>
-        </div>
-
-        {/* BOTÃO ATALHO DIRETO PARA ACESSO AOS JOGOS */}
-        <div className="direct-child-access">
-          <button className="btn-child-direct" onClick={handleChildDirect}>
-            <Sparkles size={24} color="#F7A619" />
-            <span>Entrar Direto como Criança (Jogos)</span>
-          </button>
         </div>
       </div>
 
@@ -269,33 +254,6 @@ export function LoginView({ onLoginSuccess, onGuestChildAccess }) {
         .btn-login-yellow:hover {
           transform: translateY(-2px);
           background: #FFFBEB;
-        }
-
-        .direct-child-access {
-          width: 100%;
-        }
-
-        .btn-child-direct {
-          width: 100%;
-          height: 60px;
-          background: #FFFFFF;
-          border: 3px solid #F7A619;
-          border-radius: 30px;
-          font-size: 1.15rem;
-          font-weight: 800;
-          color: #D97706;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 12px;
-          box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-          transition: transform 0.2s ease, background 0.2s ease;
-        }
-
-        .btn-child-direct:hover {
-          transform: translateY(-2px);
-          background: #FEF3C7;
         }
 
         @keyframes floatCloud {
